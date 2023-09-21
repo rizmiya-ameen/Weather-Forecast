@@ -1,6 +1,6 @@
 # Weather Forecast React App
 
-![App Screenshot](screenshot.JPG)
+![App Screenshot](screenshot.png)
 
 ## Overview
 
