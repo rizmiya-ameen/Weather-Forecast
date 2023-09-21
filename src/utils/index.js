@@ -1,6 +1,24 @@
+
+import { API_KEY } from "./key";
+
 export async function fetchCity(location, units) {
   try {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=4a4db7da5bf16d256dec633ab6bbbaf5&units=${units}`);
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${API_KEY}&units=${units}`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+}
+
+//fetch the city
+export async function fetchLocation(lat, lon) {
+  try {
+    const response = await fetch(`http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=5&appid=${API_KEY}`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -13,10 +31,11 @@ export async function fetchCity(location, units) {
 }
 
 
+
 //daily
 export async function fetchDaily(lat, lon, units) {
   try {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=1fa9ff4126d95b8db54f3897a208e91c&units=${units}`);
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&appid=${API_KEY}&units=${units}`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -31,7 +50,7 @@ export async function fetchDaily(lat, lon, units) {
 //Hourly
 export async function fetchHourly(lat, lon, units) {
   try {
-    const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,daily,alerts&appid=1fa9ff4126d95b8db54f3897a208e91c&units=${units}`);
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,daily,alerts&appid=${API_KEY}&units=${units}`);
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }

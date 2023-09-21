@@ -30,8 +30,8 @@ const TopButtons = ({setLocation}) => {
           key={item.id}
           className="text-white text-lg font-medium"
         >
-            {item.title}
-          </button>
+          {item.title}
+        </button>
       ))}
 
     </div>

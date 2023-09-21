@@ -58,16 +58,46 @@ function App() {
   return (
     <div className="mx-auto max-w-screen-md mt-4 py-5 px-24 bg-gradient-to-br blue from-cyan-700 to-blue-700 h-fit shadow-xl shadow-gray-400">
       
-        <TopButtons setLocation={setLocation}/>  
-        <Inputs setLocation={setLocation} setUnits={setUnits} setSymbol={setSymbol}/>
+        <TopButtons 
+          setLocation={setLocation}
+        />  
+
+        <Inputs 
+          setLocation={setLocation} 
+          setUnits={setUnits} 
+          setSymbol={setSymbol}
+        />
 
         {weatherData && dailyWeather && hourlyWeather ? (
           <div>
-            <TimeAndLocation weatherData={weatherData} dailyWeather={dailyWeather}/>
-            <TemperatureAndDetails weatherData={weatherData} dailyWeather={dailyWeather} symbol={symbol}/>
-            <Forecast title="HOURLY FORECAST" foreCast={hourly} timezone={timezone} format={"hh:mm a"} symbol={symbol}/>
+            
+            <TimeAndLocation 
+              weatherData={weatherData} 
+              dailyWeather={dailyWeather}
+            />
 
-            <Forecast title="DAILY FORECAST" foreCast={daily} timezone={timezone} format={"ccc"} symbol={symbol}/>
+            <TemperatureAndDetails 
+              weatherData={weatherData} 
+              dailyWeather={dailyWeather} 
+              symbol={symbol}
+            />
+
+            <Forecast 
+              title="HOURLY FORECAST" 
+              foreCast={hourly} 
+              timezone={timezone} 
+              format={"hh:mm a"} 
+              symbol={symbol}
+            />
+
+            <Forecast 
+              title="DAILY FORECAST" 
+              foreCast={daily} 
+              timezone={timezone} 
+              format={"ccc"} 
+              symbol={symbol}
+            />
+
           </div>
           ) : (
             <p>Loading weather data...</p>
