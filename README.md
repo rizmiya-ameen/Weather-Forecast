@@ -21,7 +21,7 @@ Welcome to the Weather Forecast React App! This application provides up-to-date 
 - **Condition-aware backgrounds**: The background changes with the weather and time of day.
 - **Remembers your choices**: Your last location and units are kept betwith a retry button.
 
-## Getting Started
+<!-- ## Getting Started
 
 1. Get a free API key from [OpenWeatherMap](https://home.openweathermap.org/api_keys).
 2. Create a `.env.local` file in the project root:
@@ -37,7 +37,7 @@ Welcome to the Weather Forecast React App! This application provides up-to-date 
    yarn start
    ```
 
-The app uses only free-tier OpenWeatherMap endpoints: Current Weather, 5 Day / 3 Hour Forecast, and Geocoding.
+The app uses only free-tier OpenWeatherMap endpoints: Current Weather, 5 Day / 3 Hour Forecast, and Geocoding. -->
 
 ## Acknowledgments
 
