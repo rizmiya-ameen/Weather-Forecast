@@ -1,72 +1,55 @@
 import React from 'react'
-import { UilArrowUp, UilArrowDown, UilTemperature, UilTear, UilWind, UilSun, UilSunset } from '@iconscout/react-unicons'
-import { DateTime } from 'luxon';
+import { UilArrowUp, UilArrowDown, UilTemperature, UilTear, UilWind } from '@iconscout/react-unicons'
+import { capitalize, formatTemp, formatWind, UNIT_LABELS } from '../utils/format';
+import { iconUrl } from '../utils';
 
+const TemperatureAndDetails = ({ current, daily, units }) => {
 
-const TemperatureAndDetails = ({weatherData, dailyWeather, symbol}) => {
-
-  const sunRise = DateTime.fromSeconds(weatherData.sys.sunrise).setZone(dailyWeather.timezone).toFormat("hh:mm a")
-  const sunSet = DateTime.fromSeconds(weatherData.sys.sunset).setZone(dailyWeather.timezone).toFormat("hh:mm a")
-
-  //console.log(weatherData)
+  const { temp, feels_like, humidity } = current.main
+  // Today's range from the forecast is more meaningful than the current observation's min/max.
+  const high = Math.max(daily?.max ?? -Infinity, current.main.temp_max)
+  const low = Math.min(daily?.min ?? Infinity, current.main.temp_min)
 
   return (
+    <section className='my-6'>
 
-    <div>
-      
-      <div className='flex items-center justify-center text-xl text-cyan-300 py-6'>
-        {weatherData.weather[0].description}
-      </div>
+      <p className='text-center text-xl text-cyan-100'>{capitalize(current.weather[0].description)}</p>
 
-      <div className='flex flex-row items-center justify-between text-white py-3'> 
+      <div className='mt-4 flex flex-col sm:flex-row items-center justify-between gap-4'>
 
-        <img 
-          src={`http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`} 
-          alt="" 
-          className='w-20'
+        <img
+          src={iconUrl(current.weather[0].icon, '4x')}
+          alt={current.weather[0].description}
+          className='w-28 h-28 -my-4'
         />
 
-        <p className='text-5xl'>{weatherData.main.temp.toFixed()} {symbol}</p>
-
-        <div className='flex flex-col space-y-2'>
-          
-          <div className='flex font-light text-sm items-center justify-center'>
-            <UilTemperature size={18} className="mr-1"/>
-            Real Feel:
-            <strong className='font-medium ml-1'>{weatherData.main.feels_like.toFixed()} {symbol}</strong>
-          </div>
-
-          <div className='flex font-light text-sm items-center justify-center'>
-            <UilTear size={18} className="mr-1"/>
-            Humidity:
-            <strong className='font-medium ml-1'>{weatherData.main.humidity} %</strong>
-          </div>
-
-          <div className='flex font-light text-sm items-center justify-center'>
-            <UilWind size={18} className="mr-1"/>
-            Wind:
-            <strong className='font-medium ml-1'>{weatherData.wind.speed} km/h</strong>
-          </div>
+        <div className='text-center'>
+          <p className='text-7xl font-extralight'>
+            {Math.round(temp)}<span className='align-top text-3xl'>{UNIT_LABELS[units].temp}</span>
+          </p>
+          <p className='mt-1 flex items-center justify-center gap-3 text-sm'>
+            <span className='flex items-center'><UilArrowUp size={16} />H: {formatTemp(high)}</span>
+            <span className='flex items-center'><UilArrowDown size={16} />L: {formatTemp(low)}</span>
+          </p>
         </div>
+
+        <ul className='flex flex-row sm:flex-col gap-4 sm:gap-2 text-sm font-light'>
+          <li className='flex items-center'>
+            <UilTemperature size={18} className="mr-1" />
+            Feels like <strong className='font-medium ml-1'>{formatTemp(feels_like)}</strong>
+          </li>
+          <li className='flex items-center'>
+            <UilTear size={18} className="mr-1" />
+            Humidity <strong className='font-medium ml-1'>{humidity}%</strong>
+          </li>
+          <li className='flex items-center'>
+            <UilWind size={18} className="mr-1" />
+            Wind <strong className='font-medium ml-1'>{formatWind(current.wind.speed, units)}</strong>
+          </li>
+        </ul>
       </div>
 
-      <div className='flex flex-row items-center justify-center space-x-2 text-white text-xs py-3'>
-          <UilSun />
-          <p className='font-light'>Rise: <span className='font-medium ml-1'>{sunRise}</span></p>
-          <p className='font-light'>|</p>
-
-          <UilSunset />
-          <p className='font-light'>Set: <span className='font-medium ml-1'>{sunSet}</span></p>
-          <p className='font-light'>|</p>
-
-          <UilArrowUp />
-          <p className='font-light'>High: <span className='font-medium ml-1'>{weatherData.main.temp_max.toFixed()} {symbol}</span></p>
-          <p className='font-light'>|</p>
-
-          <UilArrowDown />
-          <p className='font-light'>Low: <span className='font-medium ml-1'>{weatherData.main.temp_min.toFixed()} {symbol}</span></p>
-      </div>
-    </div>
+    </section>
   )
 }
 

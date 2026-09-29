@@ -1,113 +1,106 @@
-import './App.css';
+import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 import TopButtons from './Components/TopButtons';
 import Inputs from './Components/Inputs';
 import TimeAndLocation from './Components/TimeAndLocation';
 import TemperatureAndDetails from './Components/TemperatureAndDetails';
+import Highlights from './Components/Highlights';
 import Forecast from './Components/Forecast';
-import { useEffect, useState } from 'react';
-import { fetchCity, fetchDaily, fetchHourly } from './utils';
+import StatusMessage from './Components/StatusMessage';
+import { fetchWeather } from './utils';
+import { getDaily, getHourly } from './utils/forecast';
+import { isToday } from './utils/format';
+import { backgroundFor } from './utils/theme';
+import { loadPrefs, savePrefs } from './utils/storage';
 
+const DEFAULT_LOCATION = { q: 'Sydney' };
 
 function App() {
 
-  const [weatherData, setWeatherData] = useState(null)
-  const [dailyWeather, setDailyWeather] = useState(null)
-  const [hourlyWeather, setHourlyWeather] = useState(null)
-  const [location, setLocation] = useState('Sydney')
-
-  const [units, setUnits] = useState("metric")
-  const [symbol, setSymbol] = useState("°C")
-
+  const [location, setLocation] = useState(() => loadPrefs().location ?? DEFAULT_LOCATION)
+  const [units, setUnits] = useState(() => loadPrefs().units ?? 'metric')
 
   useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        const response1 = await fetchCity(location, units);
-        setWeatherData(response1)
-
-        const { lat, lon } = response1.coord;
-
-        const response2 = await fetchDaily(lat, lon, units);
-        setDailyWeather(response2)
-
-        const response3 = await fetchHourly(lat, lon, units);
-        setHourlyWeather(response3)        
-        
-      } catch (error) {
-        console.log("Error fetching weather data: ", error)
-      }
-    };
-  
-    fetchWeather();
+    savePrefs({ location, units });
   }, [location, units]);
 
-  //console.log(location)
-  
-  let daily, timezone, hourly;
+  const { data, error, isLoading, isFetching, isError, isPreviousData, refetch, dataUpdatedAt } = useQuery(
+    ['weather', location, units],
+    ({ signal }) => fetchWeather(location, units, signal),
+    {
+      keepPreviousData: true,
+      // A missing city or bad key won't fix itself; only retry transient failures.
+      retry: (count, err) => ![401, 404].includes(err?.status) && count < 2,
+    }
+  );
 
-  if (dailyWeather) {
-    daily = dailyWeather.daily;
-  }
-
-  if (hourlyWeather) {
-    hourly = hourlyWeather.hourly;
-    timezone = hourlyWeather.timezone;
-  }
-  
+  const current = data?.current;
+  const forecast = data?.forecast;
+  const daily = forecast ? getDaily(forecast) : [];
+  const today = daily.find(day => isToday(day.dt, forecast.city.timezone));
 
   return (
-    <div className="mx-auto max-w-screen-md mt-4 py-5 px-24 bg-gradient-to-br blue from-cyan-700 to-blue-700 h-fit shadow-xl shadow-gray-400">
-      
-        <TopButtons 
-          setLocation={setLocation}
-        />  
+    <div className={`min-h-screen bg-gradient-to-br ${backgroundFor(current)} transition-colors duration-700`}>
+      <main className="mx-auto max-w-screen-md px-4 py-6 sm:px-8 text-white">
 
-        <Inputs 
-          setLocation={setLocation} 
-          setUnits={setUnits} 
-          setSymbol={setSymbol}
+        <TopButtons setLocation={setLocation} />
+
+        <Inputs
+          setLocation={setLocation}
+          units={units}
+          setUnits={setUnits}
         />
 
-        {weatherData && dailyWeather && hourlyWeather ? (
-          <div>
-            
-            <TimeAndLocation 
-              weatherData={weatherData} 
-              dailyWeather={dailyWeather}
+        {isError && (
+          <StatusMessage
+            tone="error"
+            message={error.message}
+            action={error.status === 404 ? null : { label: 'Try again', onClick: () => refetch() }}
+          />
+        )}
+
+        {isLoading && <StatusMessage tone="loading" message="Loading weather data..." />}
+
+        {current && forecast && (
+          <div className={`transition-opacity ${isFetching ? 'opacity-60' : 'opacity-100'}`}>
+
+            <TimeAndLocation
+              current={current}
+              // Don't pair a new location's label with the previous location's data.
+              label={isPreviousData || isError ? undefined : location.label}
+              updatedAt={dataUpdatedAt}
+              isFetching={isFetching}
+              onRefresh={() => refetch()}
             />
 
-            <TemperatureAndDetails 
-              weatherData={weatherData} 
-              dailyWeather={dailyWeather} 
-              symbol={symbol}
+            <TemperatureAndDetails current={current} daily={today} units={units} />
+
+            <Forecast
+              title="Next 24 hours"
+              variant="hourly"
+              items={getHourly(forecast)}
+              timezone={forecast.city.timezone}
             />
 
-            <Forecast 
-              title="HOURLY FORECAST" 
-              foreCast={hourly} 
-              timezone={timezone} 
-              format={"hh:mm a"} 
-              symbol={symbol}
+            <Forecast
+              title="5-day forecast"
+              variant="daily"
+              items={daily}
+              timezone={forecast.city.timezone}
             />
 
-            <Forecast 
-              title="DAILY FORECAST" 
-              foreCast={daily} 
-              timezone={timezone} 
-              format={"ccc"} 
-              symbol={symbol}
-            />
+            <Highlights current={current} units={units} />
 
           </div>
-          ) : (
-            <p>Loading weather data...</p>
-          )}
-     
+        )}
+
+        <footer className="mt-10 text-center text-xs text-white/60">
+          Weather data by <a href="https://openweathermap.org/" className="underline hover:text-white" target="_blank" rel="noreferrer">OpenWeatherMap</a>
+        </footer>
+
+      </main>
     </div>
-    
-    
   );
 }
 
 export default App;
-
