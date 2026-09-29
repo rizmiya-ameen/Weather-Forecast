@@ -1,40 +1,23 @@
 import React from "react";
 
-const TopButtons = ({setLocation}) => {
+const cities = ['Colombo', 'London', 'New York', 'Sydney', 'Tokyo'];
 
-  const cities = [
-    {
-      id: 1,
-      title: 'Colombo'
-    }, {
-      id: 2,
-      title: 'London'
-    },{
-      id: 3,
-      title: 'New York'
-    },{
-      id: 4,
-      title: 'Sydney'
-    },{
-      id: 5,
-      title: 'Tokyo'
-    },
-  ]
+const TopButtons = ({ setLocation }) => {
 
   return (
-    <div className="flex flex-row justify-around">
-      
-      {cities.map(item => (
-        <button 
-          onClick={event => setLocation(event.currentTarget.textContent)} 
-          key={item.id}
-          className="text-white text-lg font-medium"
+    <nav className="flex flex-row flex-wrap justify-center gap-2 sm:justify-around">
+
+      {cities.map(city => (
+        <button
+          key={city}
+          onClick={() => setLocation({ q: city })}
+          className="rounded-full px-3 py-1 text-sm sm:text-base font-medium hover:bg-white/15 transition"
         >
-          {item.title}
+          {city}
         </button>
       ))}
 
-    </div>
+    </nav>
   )
 }
 

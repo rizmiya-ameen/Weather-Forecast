@@ -10,17 +10,34 @@ Welcome to the Weather Forecast React App! This application provides up-to-date 
 
 ## Features
 
-- **Temperature Units**: You can switch between Celsius and Fahrenheit to view temperature data in your preferred units.
+- **City search with autocomplete**: Suggestions appear as you type (keyboard navigation supported). Press Enter to search by name.
+- **Current location**: One click uses your browser's location to show the weather where you are.
+- **Current conditions**: Temperature, feels-like, humidity, wind, and today's high/low.
+- **Hourly forecast**: The next 24 hours in 3-hour steps, with chance of rain.
+- **5-day forecast**: Daily highs and lows with a temperature range bar, conditions, and chance of rain.
+- **Today's highlights**: Sunrise, sunset, wind direction and gusts, pressure, visibility, and cloud cover.
+- **Celsius / Fahrenheit**: Wind and visibility switch units too (km/h and km, or mph and mi).
+- **Condition-aware backgrounds**: The background changes with the weather and time of day.
+- **Remembers your choices**: Your last location and units are kept between visits.
+- **Friendly error handling**: Clear messages for unknown cities or network problems, with a retry button.
 
-- **Current Location Forecast**: The app automatically detects your current location and provides the latest weather forecast, so you're always in the know about local conditions.
+## Getting Started
 
-- **Search Bar**: Easily search for weather forecasts in any location worldwide. Just enter the city or location name, and the app will fetch the forecast for you.
+1. Get a free API key from [OpenWeatherMap](https://home.openweathermap.org/api_keys).
+2. Create a `.env.local` file in the project root:
 
-- **Daily Forecast**: Get daily weather forecast for the next 5 days, including temperature and weather conditions.
+   ```
+   REACT_APP_WEATHER_API_KEY=your_api_key_here
+   ```
 
-- **Hourly Forecast**: Stay prepared with a 5-hourly weather forecast for the next 5 hours, so you can plan your activities with confidence.
+3. Install and run:
 
+   ```
+   yarn install
+   yarn start
+   ```
 
+The app uses only free-tier OpenWeatherMap endpoints: Current Weather, 5 Day / 3 Hour Forecast, and Geocoding.
 
 ## Acknowledgments
 
