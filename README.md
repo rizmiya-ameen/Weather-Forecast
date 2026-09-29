@@ -1,6 +1,7 @@
 # Weather Forecast React App
 
 ![App Screenshot](screenshot.png)
+![App Screenshot](screenshot1.png)
 
 ## Overview
 
@@ -18,8 +19,7 @@ Welcome to the Weather Forecast React App! This application provides up-to-date 
 - **Today's highlights**: Sunrise, sunset, wind direction and gusts, pressure, visibility, and cloud cover.
 - **Celsius / Fahrenheit**: Wind and visibility switch units too (km/h and km, or mph and mi).
 - **Condition-aware backgrounds**: The background changes with the weather and time of day.
-- **Remembers your choices**: Your last location and units are kept between visits.
-- **Friendly error handling**: Clear messages for unknown cities or network problems, with a retry button.
+- **Remembers your choices**: Your last location and units are kept betwith a retry button.
 
 ## Getting Started
 
@@ -41,6 +41,4 @@ The app uses only free-tier OpenWeatherMap endpoints: Current Weather, 5 Day / 3
 
 ## Acknowledgments
 
-This project relies on data provided by [OpenWeatherMap](https://openweathermap.org/) 
-
-
+This project relies on data provided by [OpenWeatherMap](https://openweathermap.org/)
